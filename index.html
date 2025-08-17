@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>YOUR FILES HAVE BEEN ENCRYPTED !!!</title>
+  <!--
+    FULL HORROR MODE 💀 DEMO VISUAL SAJA.
+    TIDAK MELAKUKAN ENKRIPSI / AKSES FILE / NETWORK / PEMBAYARAN.
+    TEKAN ESC UNTUK KELUAR & RESTORE.
+  -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;600;800&family=Oswald:wght@600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #040204;
+      --bg1: #120204;
+      --red: #ff2b2b;
+      --muted: #bdbfc3;
+      --glass: rgba(255, 255, 255, 0.02);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: "Roboto Mono", monospace;
+      background: var(--bg0);
+      color: #fff;
+      overflow: hidden;
+    }
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    } /* stage */
+    .stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(1200px 500px at 8% 10%, rgba(255, 43, 43, 0.04), transparent 6%), linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+    /* UI grid */
+    .ui {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .left {
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .right {
+      background: linear-gradient(180deg, #060606, #0b0b0d);
+      padding: 22px;
+      border-left: 1px solid rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+    }
+    /* headline */
+    .headline {
+      font-family: Oswald, sans-serif;
+      font-size: 92px;
+      line-height: 0.9;
+      color: var(--red);
+      letter-spacing: 2px;
+      text-shadow: 0 18px 60px rgba(255, 43, 43, 0.1);
+      transform: translateX(0);
+      position: relative;
+    }
+    .headline.glitch {
+      animation: glitchText 900ms steps(2) infinite;
+    }
+
+    @keyframes glitchText {
+      0% {
+        text-shadow: 0 18px 40px rgba(255, 43, 43, 0.12);
+      }
+      30% {
+        text-shadow: -6px 0 0 rgba(255, 0, 0, 0.65), 6px 0 0 rgba(0, 255, 255, 0.05);
+      }
+      60% {
+        text-shadow: 4px 2px 0 rgba(255, 100, 100, 0.6);
+      }
+      100% {
+        text-shadow: 0 18px 40px rgba(255, 43, 43, 0.12);
+      }
+    }
+
+    /* subtitle */
+    .sub {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 70%;
+      margin-top: 8px;
+    }
+    /* panic center */
+    .panicRow {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .orb {
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 40, 40, 0.44), rgba(255, 20, 20, 0.06) 40%, transparent 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 40px 140px rgba(255, 30, 30, 0.12);
+      animation: pulse 1.2s infinite;
+    }
+    .orb i {
+      font-size: 60px;
+      color: #fff;
+      transform: translateY(-4px);
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.08);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .countdown {
+      font-family: "Roboto Mono", monospace;
+      font-size: 92px;
+      letter-spacing: 3px;
+      min-width: 260px;
+      text-align: center;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.02));
+      padding: 28px 30px;
+      border-radius: 14px;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .countdown.smash {
+      transform: scale(1.08) rotate(-1deg);
+    }
+    /* ransom block */
+    .ransom {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255, 43, 43, 0.02), rgba(255, 43, 43, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.02);
+    }
+    .ransom h2 {
+      margin: 0;
+      font-family: "Roboto Mono";
+      font-size: 20px;
+      color: #ffdede;
+    }
+    .ransom p {
+      margin: 8px 0 0 0;
+      color: #fffece;
+      line-height: 1.4;
+    }
+    /* file list right */
+    .filearea {
+      flex: 1;
+      margin-top: 12px;
+      overflow: auto;
+      padding-right: 8px;
+    }
+    .file {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.01), transparent);
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+    .file.corrupt {
+      transform: translateX(-6px) rotate(-0.6deg);
+      filter: blur(0.3px) saturate(0.9);
+    }
+    .fname {
+      font-weight: 800;
+      color: #eaf0ff;
+      font-size: 14px;
+      max-width: 66%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fmeta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .progressWrap {
+      margin-top: 10px;
+    }
+    .progress {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #ff2b2b, #ff934b);
+      box-shadow: 0 8px 30px rgba(255, 43, 43, 0.08);
+      transition: width 600ms linear;
+    }
+    /* noise & CRT */
+    .noise,
+    .vhs {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      mix-blend-mode: overlay;
+      opacity: 0.14;
+    }
+    .noise {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 2px;
+      opacity: 0.06;
+    }
+    .vhs {
+      background-image: repeating-linear-gradient(transparent, transparent 2px, rgba(255, 255, 255, 0.02) 3px);
+      opacity: 0.05;
+    }
+    /* big LOCKED overlay */
+    .lockedOverlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #200000, #000000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 18px;
+      text-align: center;
+      z-index: 99999;
+      color: #fff;
+      opacity: 0;
+      transform: scale(0.98);
+      transition: opacity 200ms ease, transform 260ms ease;
+    }
+    .lockedOverlay.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .lockedBig {
+      font-family: Oswald, sans-serif;
+      font-size: 160px;
+      color: var(--red);
+      letter-spacing: 8px;
+      text-shadow: 0 40px 120px rgba(255, 30, 30, 0.16);
+    }
+    .lockedSub {
+      font-family: "Roboto Mono";
+      font-size: 20px;
+      color: #ffdede;
+      margin-top: 6px;
+    }
+    /* hide cursor */
+    .hideCursor {
+      cursor: none !important;
+    }
+    /* scanline horizontal sweep for dramatic moment */
+    .sweep {
+      position: absolute;
+      left: -40%;
+      top: 0;
+      height: 100%;
+      width: 60%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+      transform: skewX(-12deg);
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    .sweep.active {
+      opacity: 0.6;
+    }
+    /* small red warning bar pinned top */
+    .warnBar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #ff0000, #ff7b00);
+      box-shadow: 0 6px 24px rgba(255, 0, 0, 0.06);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s ease;
+    }
+    .warnBar.show {
+      transform: scaleX(1);
+    }
+    
+    /* === ADDED: Blank UI === */
+    .blank-ui {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 100000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+    .blank-ui.show {
+      opacity: 1;
+    }
+    .blank-text {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: "Roboto Mono", monospace;
+      font-size: 14px;
+      color: #ff0000;
+      text-align: center;
+      opacity: 0.8;
+    }
+    .blank-text.blink {
+      animation: blinkText 1s infinite alternate;
+    }
+    @keyframes blinkText {
+      0% { opacity: 0.2; }
+      100% { opacity: 0.8; }
+    }
+    
+    /* === ADDED: Final Warning UI === */
+    .final-warning {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 0, 0, 0.2);
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-family: "Roboto Mono", monospace;
+      font-size: 14px;
+      color: #ff0000;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 9999;
+    }
+    .final-warning.show {
+      opacity: 1;
+    }
+    
+    /* responsive */
+    @media (max-width: 1100px) {
+      .ui {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 1fr 420px;
+      }
+      .headline {
+        font-size: 48px;
+      }
+      .countdown {
+        font-size: 48px;
+        padding: 18px;
+      }
+      .lockedBig {
+        font-size: 72px;
+      }
+      .orb {
+        width: 100px;
+        height: 100px;
+      }
+      .final-warning {
+        font-size: 12px;
+        padding: 8px 16px;
+      }
+    }
+    /* subtle RGB split for images / headline via pseudo layering */
+    .rgbSplit::before,
+    .rgbSplit::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.04;
+    }
+    .rgbSplit::before {
+      transform: translateX(-6px) translateY(2px) scale(1.01);
+      filter: hue-rotate(-10deg);
+    }
+    .rgbSplit::after {
+      transform: translateX(6px) translateY(-2px) scale(1.01);
+      filter: hue-rotate(8deg);
+    }
+    /* === ADDED: panic flicker + full-screen flash + glitch text (tidak menghapus kode lain) === */
+    /* rapid overlay flash (applies to lockedOverlay) */
+    @keyframes panicFlicker {
+      0%,
+      100% {
+        background: linear-gradient(180deg, #200000, #000000);
+        opacity: 1;
+      }
+      20% {
+        background: linear-gradient(180deg, #300000, #100000);
+        opacity: 1;
+      }
+      40% {
+        background: linear-gradient(180deg, #ff2b2b, #770000);
+        opacity: 1;
+      }
+      60% {
+        background: linear-gradient(180deg, #300000, #100000);
+        opacity: 1;
+      }
+      80% {
+        background: linear-gradient(180deg, #440000, #110000);
+        opacity: 1;
+      }
+    }
+    .lockedOverlay.flicker {
+      animation: panicFlicker 0.14s steps(1) infinite;
+    }
+    /* glitch text for LOCKED */
+    @keyframes lockedGlitch {
+      0% {
+        transform: translateX(0) skewX(0deg);
+        text-shadow: 0 40px 120px rgba(255, 30, 30, 0.16);
+      }
+      10% {
+        transform: translateX(-6px) skewX(-6deg);
+        text-shadow: -6px 0 10px rgba(255, 0, 0, 0.85);
+      }
+      20% {
+        transform: translateX(6px) skewX(6deg);
+        text-shadow: 6px 0 10px rgba(255, 80, 80, 0.85);
+      }
+      30% {
+        transform: translateX(-3px) skewX(-3deg);
+        text-shadow: -3px 0 8px rgba(255, 20, 20, 0.9);
+      }
+      40% {
+        transform: translateX(3px) skewX(3deg);
+        text-shadow: 3px 0 8px rgba(255, 120, 120, 0.9);
+      }
+      50% {
+        transform: translateX(0) skewX(0deg);
+        text-shadow: 0 40px 120px rgba(255, 30, 30, 0.16);
+      }
+      100% {
+        transform: translateX(0) skewX(0deg);
+      }
+    }
+    .lockedBig.flickerText {
+      animation: lockedGlitch 0.14s steps(1) infinite;
+    }
+    /* full-screen flash overlay via body pseudo-element (so whole viewport flashes) */
+    @keyframes flashOverlay {
+      0% {
+        opacity: 0;
+        transform: scale(1);
+      }
+      25% {
+        opacity: 0.28;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.18;
+        transform: scale(1.01);
+      }
+      75% {
+        opacity: 0.32;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1);
+      }
+    }
+    body.panicFlash::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 99998;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, rgba(255, 60, 60, 0.18), rgba(255, 10, 10, 0.12));
+      mix-blend-mode: screen;
+      animation: flashOverlay 0.14s steps(1) infinite;
+    }
+    /* optional: slight page-wide contrast/brightness flicker for extra panic */
+    body.panicFlash {
+      animation: pageFlash 0.28s steps(1) infinite;
+    }
+    @keyframes pageFlash {
+      0% {
+        filter: none;
+      }
+      50% {
+        filter: brightness(1.08) contrast(1.05) saturate(1.05);
+      }
+      100% {
+        filter: none;
+      }
+    }
+    /* end added styles */
+  </style>
+</head>
+<body>
+  <!-- Added Blank UI -->
+  <div class="blank-ui" id="blankUi">
+    <div class="blank-text blink" id="blankText">SISTEM DIAMANDAKAN • HARAP TUNGGU • KODE AKTIVASI: <span id="blankCode">XXXX-XXXX</span></div>
+  </div>
+  
+  <!-- Added Final Warning -->
+  <div class="final-warning" id="finalWarning">PERINGATAN TERAKHIR: SEMUA DATA AKAN DIRUSAK DALAM 00:10</div>
+  
+  <div class="stage">
+    <div class="ui hideCursor" id="ui">
+      <div class="left" id="left">
+        <div class="warnBar" id="warnBar"></div>
+        <div class="sweep" id="sweep"></div>
+        <div class="noise"></div>
+        <div class="vhs"></div>
+        <div style="position: relative">
+          <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 6px">
+            <div style="width: 78px; height: 78px; border-radius: 12px; background: linear-gradient(135deg, #ff6b6b, #ff2b2b); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #140000; font-family: Roboto Mono">
+              SL
+            </div>
+            <div>
+              <div style="font-size: 14px; font-weight: 800; color: #ffdede">SECURE-LOCK AUTHORITY</div>
+              <div style="font-size: 11px; color: var(--muted)">Kernel integrity compromised - volumes sealed</div>
+            </div>
+          </div>
+          <div style="position: relative; overflow: visible">
+            <div class="headline rgbSplit" id="headline">YOUR FILES HAVE BEEN ENCRYPTED!!</div>
+          </div>
+          <div class="sub" id="sub">SYSTEM WILL LOCK IN 00:05!!!</div>
+          <div class="panicRow">
+            <div class="orb" aria-hidden="true"><i>!</i></div>
+            <div class="countdown" id="countdown">00:00:05</div>
+          </div>
+          <div class="ransom" id="ransom">
+            <h2>ENCRYPTION - COMPLETE</h2>
+            <p id="ransomText">Semua file penting telah dikodekan. Kunci sistem: <strong id="syskey">XXXX-XXXX-XXXX</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="right" id="right">
+        <h3 style="margin-bottom: 8px; color: var(--muted)">LOCKED ACCESS TARGET</h3>
+        <div class="filearea" id="filearea">
+          <!-- file rows injected -->
+        </div>
+
+        <div class="progressWrap">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <div style="font-size: 12px; color: var(--muted)">ENCRYPTION PROGRESS</div>
+            <div style="font-size: 12px; color: var(--muted)" id="percent">100%</div>
+          </div>
+          <div class="progress" style="margin-top: 8px"><i id="bar"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- LOCKED overlay -->
+  <div class="lockedOverlay" id="lockedOverlay" role="alert" aria-live="assertive">
+    <div class="lockedBig" id="lockedBig">LOCKED</div>
+    <div style="font-family: Roboto Mono; font-weight: 800; font-size: 20px; color: #ffdede">
+      SYSTEM ID - <span id="lockedId">XXXX-XXXX</span>
+    </div>
+    <div class="lockedSub">WARNING! ALL FILES ENCRYPTED - SYSTEM LOCKED!!</div>
+  </div>
+  <audio id="loudAudio" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+  </audio>
+  <script>
+    /* SAFETY: Demo visual only. TEKAN ESC untuk keluar. */
+
+    // === AUDIO FULL VOLUME ===
+    const loudAudio = document.getElementById("loudAudio");
+    loudAudio.volume = 1.0; // Set volume to maximum
+
+    // Play audio on user interaction (required by most browsers)
+    // This ensures the audio plays even if autoplay is blocked, by waiting for a click.
+    window.addEventListener("click", () => {
+      loudAudio.play().catch((error) => {
+        console.error("Audio play failed:", error);
+      });
+    }, { once: true }); // The event listener will be removed after the first click
+
+    // realistic-ish filenames
+    const files = [
+      "Laporan_Keuangan_2024.xlsx",
+      "Database_User.db",
+      "KTP_Scans.zip",
+      "Foto_Ayah.jpg",
+      "Proposal_Investor.docx",
+      "Private_Keys.pem",
+      "Contracts_Signed.pdf",
+      "Resume_Ahmad.pdf",
+      "backup_2023.tar.gz",
+      "presentation_final.pptx",
+      "wedding_raw.CR2",
+      "video_event.mp4",
+      "notes_personal.txt",
+      "music_archive.flac",
+      "archive_old.zip",
+      "design_assets.psd",
+      "invoice_202312.csv",
+      "project_source.zip",
+      "diary_private.doc",
+      "client_data.db",
+      "taxes_2023.xls",
+      "secret_plan.docx",
+      "backup_v2.bak",
+      "contacts.vcf",
+      "photo_family_01.jpg",
+      "meeting_recording.mkv",
+      "confidential_contract.pdf",
+      "ssh_keys.key",
+      "db_main.sqlite",
+      "logo_master.ai",
+    ];
+
+    const filearea = document.getElementById("filearea");
+    function injectFiles() {
+      filearea.innerHTML = "";
+      for (let i = 0; i < files.length; i++) {
+        const row = document.createElement("div");
+        row.className = "file";
+        row.innerHTML = `<div class="fname">${files[i]}</div><div class="fmeta">${Math.floor(Math.random() * 980) + 20} KB</div>`;
+        filearea.appendChild(row);
+      }
+    }
+    injectFiles();
+
+    // auto scroll to mimic flood
+    let scrollPos = 0;
+    let scrollIv = setInterval(autoScroll, 30);
+    function autoScroll() {
+      const max = filearea.scrollHeight - filearea.clientHeight;
+      scrollPos += 2.6;
+      if (scrollPos > max) scrollPos = 0;
+      filearea.scrollTop = scrollPos;
+    }
+
+    // scramble generator
+    function scramble(s) {
+      const glyphs = "█▓▒░■▲▼●○▮▯▰▱◼◻◽◾*><#%$@";
+      return s.split("").map((ch) => (Math.random() < 0.72 ? glyphs[Math.floor(Math.random() * glyphs.length)] : ch)).join("");
+    }
+
+    // initial visual encrypt pulses (faster + harsher)
+    function visualPulse(intensity = 1) {
+      const items = document.querySelectorAll(".file .fname");
+      for (let i = 0; i < items.length; i++) {
+        (function (el, idx) {
+          setTimeout(() => {
+            el.dataset.orig = el.textContent;
+            el.textContent = scramble(el.textContent);
+            el.parentElement.style.background = "linear-gradient(90deg, rgba(255,12,12,0.06), transparent)";
+            if (Math.random() > 0.7) el.parentElement.classList.add("corrupt");
+            setTimeout(() => {
+              el.parentElement.classList.remove("corrupt");
+            }, 420 + Math.random() * 540);
+          }, (6 / intensity) * idx + Math.random() * 80);
+        })(items[i], i);
+      }
+    }
+    setTimeout(() => visualPulse(1.2), 120);
+
+    // continuous flicker & micro-glitches
+    setInterval(() => {
+      const items = document.querySelectorAll(".file .fname");
+   
